@@ -33,7 +33,8 @@ export interface User {
     firstname: string;
     lastname: string;
   };
-  phone: string;
+  phone?: string;
+  joinedAt: string; // <--- ADD THIS (ISO Date String)
 }
 
 export interface AuthResponse {

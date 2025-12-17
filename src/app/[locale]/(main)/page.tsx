@@ -1,65 +1,80 @@
-import Image from "next/image";
+import { getTranslations } from 'next-intl/server';
+import HeroSection from '@/components/layout/HeroSection';
+import ProductList from '@/components/products/ProductList';
+import { Truck, ShieldCheck, Headphones, CreditCard } from 'lucide-react';
 
-export default function Home() {
+// SEO Metadata
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Metadata' });
+ 
+  return {
+    title: t('title'),
+    description: t('description')
+  };
+}
+
+// Trust Features Component (Inline for simplicity)
+const FeatureItem = ({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) => (
+  <div className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+    <div className="p-3 rounded-full bg-primary/10 text-primary shrink-0">
+      <Icon size={24} />
+    </div>
+    <div>
+      <h3 className="font-bold text-foreground mb-1">{title}</h3>
+      <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+    </div>
+  </div>
+);
+
+export default async function Home() {
+  const t = await getTranslations('Common');
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="flex flex-col gap-12 pb-20">
+      
+      {/* 1. Hero Section */}
+      <HeroSection />
+
+      {/* 2. Trust Signals (Why Choose Us) */}
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <FeatureItem 
+          icon={Truck} 
+          title="Free Shipping" 
+          desc="On all orders over $200 throughout the region." 
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+        <FeatureItem 
+          icon={ShieldCheck} 
+          title="Secure Payment" 
+          desc="100% secure payments with 256-bit encryption." 
+        />
+        <FeatureItem 
+          icon={CreditCard} 
+          title="Easy Returns" 
+          desc="30-day money back guarantee, no questions asked." 
+        />
+        <FeatureItem 
+          icon={Headphones} 
+          title="24/7 Support" 
+          desc="Our dedicated support team is here to help you." 
+        />
+      </section>
+
+      {/* 3. Main Catalog */}
+      <section id="catalog" className="scroll-mt-24">
+        <div className="flex flex-col gap-2 mb-8">
+          <h2 className="text-3xl font-bold text-foreground">
+            Latest <span className="text-primary">Arrivals</span>
+          </h2>
+          <p className="text-muted-foreground">
+            Browse our complete catalog with advanced filtering and search.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        
+        {/* Client Component for Interactive Feed */}
+        <ProductList />
+      </section>
+
     </div>
   );
 }

@@ -12,7 +12,7 @@ export default function AuthLayout({
         Store Logo
       </Link>
       
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
+      <div className="w-full lg:w-1/2 bg-white rounded-lg shadow-md p-6">
         {children}
       </div>
     </div>

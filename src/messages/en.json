@@ -5,6 +5,7 @@
   },
   "Common": {
     "cart": "Cart",
+    "logout": "Logout",
     "login": "Login",
     "search": "Search for a product..."
   }
