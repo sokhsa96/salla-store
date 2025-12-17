@@ -1,0 +1,11 @@
+{
+  "Metadata": {
+    "title": "Salla Challenge Store",
+    "description": "A Next.js 15 E-commerce implementation"
+  },
+  "Common": {
+    "cart": "Cart",
+    "login": "Login",
+    "search": "Search for a product..."
+  }
+}

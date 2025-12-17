@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* 1. Define the Theme Variables mapping (Tailwind v4 syntax) */
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+/* 2. Define the Actual Colors (The Luxury Palette) */
+/* We use oklch or hex for v4, it handles opacity automatically */
+:root {
+  /* Clean White Background */
+  --background: #ffffff;
+  /* Deep Royal Navy for Text */
+  --foreground: #0f172a;
+
+  /* PRIMARY: The "Salla Premium" Teal */
+  --primary: #0d9488;
+  --primary-foreground: #ffffff;
+
+  /* SECONDARY: Gold/Amber for Luxury Accents */
+  --secondary: #f59e0b;
+  --secondary-foreground: #ffffff;
+
+  /* MUTED: For backgrounds/dividers */
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+
+  /* CARD: Pure White */
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+
+  /* ERROR */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  /* BORDER: Soft Grey */
+  --border: #e2e8f0;
+  
+  --radius: 0.5rem;
+}
+
+/* 3. Apply Base Styles */
+@layer base {
+  *,
+  ::after,
+  ::before {
+    box-sizing: border-box;
+    /* This uses the --color-border we defined above */
+    border-color: var(--border); 
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    /* Improve text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
