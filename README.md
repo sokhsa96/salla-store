@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Salla Challenge - Senior Frontend Engineer
 
-## Getting Started
+A high-performance, scalable E-commerce application built with **Next.js 15**, **TypeScript**, and **Micro-frontend architecture principles**.
 
-First, run the development server:
+## 🚀 Features & Architecture Decisions
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 1. Architecture
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Next.js 15 App Router:** Utilized for leveraging React Server Components (RSC) for SEO and initial load performance.
+- **Route Groups:** Separated `(auth)` and `(main)` layouts to ensure optimized DOM structure for different user flows.
+- **Feature-Sliced Design:** Components and hooks are organized by domain (`cart`, `products`, `auth`) rather than generic types.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. State Management (Hybrid Approach)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Server State:** Managed via **React Query (TanStack Query)** for caching, background re-fetching, and handling loading/error states gracefully.
+- **Client State:** Managed via **Zustand**.
+  - **Auth Store:** Syncs with HttpOnly cookies via middleware logic.
+  - **Cart Store:** Persisted to `localStorage` using Zustand middleware to preserve user data across sessions (Cart Merging simulation).
 
-## Learn More
+### 3. Authentication (Mock Backend)
 
-To learn more about Next.js, take a look at the following resources:
+Instead of relying solely on client-side logic, I implemented a **Secure Mock Backend** using Next.js API Routes:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **JWT Cookies:** User sessions are encrypted using `jose` and stored in HttpOnly cookies to prevent XSS attacks.
+- **Middleware:** Request interception for localization and session validation.
+- **Form Validation:** Strict schema validation using **Zod** and **React Hook Form**.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. Performance & UX
 
-## Deploy on Vercel
+- **Image Optimization:** Used `next/image` with remote patterns.
+- **Infinite Scroll:** Implemented using `IntersectionObserver` for a seamless feed experience.
+- **Debounced Search:** Prevents unnecessary re-renders and API calls during filtering.
+- **Optimistic UI:** Cart interactions feel instant due to optimistic state updates.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 5. Testing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Unit tests implemented using **Vitest** + **React Testing Library**:
+
+- `npm test` runs suites for:
+  - Complex Cart Logic (Add/Remove/Total Calculation).
+  - Form Validation Rules.
+  - Component Rendering.
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4
+- **State:** Zustand + React Query
+- **Testing:** Vitest
+- **I18n:** next-intl (Arabic/English support)
+
+## 🏃‍♂️ How to Run
+
+1. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
