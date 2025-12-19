@@ -7,8 +7,26 @@ import QueryProvider from '@/providers/QueryProvider';
 import '@/app/globals.css';
 
 // Setup Fonts
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'],display: 'swap',variable: '--font-inter' });
 const kufi = Noto_Kufi_Arabic({ subsets: ['arabic'] });
+
+
+export const metadata = {
+  title: {
+    template: '%s | Salla Store',
+    default: 'Salla Store - Premium E-commerce',
+  },
+  description: 'Experience the future of shopping with our luxury collection.',
+  // Required for 100 SEO Score
+  metadataBase: new URL('https://your-vercel-app.vercel.app'), 
+  openGraph: {
+    title: 'Salla Store',
+    description: 'Premium E-commerce Challenge',
+    siteName: 'Salla Store',
+    locale: 'en_US',
+    type: 'website',
+  },
+};
 
 export default async function LocaleLayout({
   children,

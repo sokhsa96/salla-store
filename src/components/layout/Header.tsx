@@ -28,7 +28,7 @@ export default function Header() {
     <header className="w-full bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
       <div className="container mx-auto py-3 px-4 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold text-primary tracking-tight">
+        <Link aria-label="Home" href="/" className="text-2xl font-bold text-primary tracking-tight">
           Salla<span className="text-secondary">.</span>Challenge
         </Link>
 
@@ -37,9 +37,8 @@ export default function Header() {
            
            {/* --- CART ICON WITH BADGE --- */}
            <Link 
-             href="/cart" 
+             href="/cart" aria-label={`Cart with ${itemsCount} items`}
              className="relative group p-2 rounded-full hover:bg-gray-50 transition-colors"
-             aria-label={t('cart')}
            >
              {/* The Icon */}
              <ShoppingBag 
@@ -74,6 +73,7 @@ export default function Header() {
                     <button 
                       onClick={logout}
                       className="bg-white text-destructive cursor-pointer text-sm px-4 py-2 rounded-md shadow-lg border border-gray-100 whitespace-nowrap hover:bg-red-50"
+                      aria-label="Log out of your account"
                     >
                       {t('logout', { defaultMessage: 'Logout' })}
                     </button>
@@ -95,6 +95,7 @@ export default function Header() {
            ) : (
              <Link 
                href="/login" 
+               aria-label="Login"
                className="px-5 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90 transition-all shadow-md text-sm"
              >
                {t('login')}

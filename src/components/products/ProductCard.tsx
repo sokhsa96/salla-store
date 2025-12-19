@@ -48,8 +48,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           src={product.image}
           alt={product.title}
           fill
-          className="object-contain p-6 transition-transform duration-700 ease-in-out group-hover:scale-110 mix-blend-multiply"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-contain p-6 transition-transform duration-700 ease-in-out group-hover:scale-110 mix-blend-multiply"
         />
 
         {/* Badges Overlay */}
@@ -63,6 +63,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Wishlist Button (Floating) */}
         <button
           onClick={handleWishlist}
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
           className={cn(
             "absolute top-3 end-3 z-10 p-2 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm",
             isWishlisted 
@@ -77,6 +78,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="absolute bottom-0 inset-x-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20">
           <button
             onClick={handleAddToCart}
+            aria-label={`Add ${product.title} to cart`}
             disabled={isAdding}
             className="w-full h-12 bg-primary text-primary-foreground font-semibold flex items-center justify-center gap-2 hover:bg-teal-700 transition-colors"
           >
