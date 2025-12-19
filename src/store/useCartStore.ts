@@ -63,9 +63,9 @@ export const useCartStore = create<CartState>()(
       },
     }),
     {
-      name: 'salla-cart-storage', // Unique key in LocalStorage
+      name: 'salla-cart-storage',
       storage: createJSONStorage(() => localStorage),
-      skipHydration: true, // We handle hydration in the hook to prevent SSR errors
+      skipHydration: true,
     }
   )
 );

@@ -34,7 +34,7 @@ export interface User {
     lastname: string;
   };
   phone?: string;
-  joinedAt: string; // <--- ADD THIS (ISO Date String)
+  joinedAt: string;
 }
 
 export interface AuthResponse {

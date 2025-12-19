@@ -18,9 +18,9 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ user: null }),
     }),
     {
-      name: 'auth-storage', // unique name
+      name: 'auth-storage',
       storage: createJSONStorage(() => localStorage),
-      skipHydration: true, // We handle hydration manually in the hook to avoid SSR mismatches
+      skipHydration: true,
     }
   )
 );

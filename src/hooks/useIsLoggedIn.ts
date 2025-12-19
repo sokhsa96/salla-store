@@ -15,6 +15,6 @@ export const useIsLoggedIn = () => {
   return {
     isLoggedIn: !!user,
     user,
-    isLoading: !isMounted // Useful to show a loading spinner or skeleton
+    isLoading: !isMounted 
   };
 };

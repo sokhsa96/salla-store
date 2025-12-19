@@ -25,15 +25,15 @@ export default function LoginPage() {
     setError
   } = useForm<LoginFormValues>({
     resolver: zodResolver(LoginSchema),
-    mode: 'onChange', // Validates as you type
+    mode: 'onChange', 
   });
 
   // 2. React Query Mutation (Handles loading/error states)
   const mutation = useMutation({
     mutationFn: authService.login,
     onSuccess: (data) => {
-      login(data.user); // Persist to Zustand/LocalStorage
-      router.push('/'); // Redirect to Home
+      login(data.user); 
+      router.push('/'); 
     },
     onError: (err) => {
       setError('root', { 
