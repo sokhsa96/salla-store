@@ -1,12 +1,12 @@
+import type { NextConfig } from 'next'; // 1. Import the type
 import createNextIntlPlugin from 'next-intl/plugin';
- 
+
 const withNextIntl = createNextIntlPlugin(
     './src/i18n/request.ts'
 );
- 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  // Allow images from fakestoreapi.com
+
+// 2. Add the ": NextConfig" type annotation here
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
@@ -16,5 +16,5 @@ const nextConfig = {
     ],
   },
 };
- 
+
 export default withNextIntl(nextConfig);
