@@ -5,6 +5,7 @@ import { routing } from "@/i18n/routing";
 import { Inter, Noto_Kufi_Arabic } from "next/font/google";
 import QueryProvider from "@/providers/QueryProvider";
 import "@/app/globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 // Setup Fonts
 const inter = Inter({
@@ -58,6 +59,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>{children}</QueryProvider>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
