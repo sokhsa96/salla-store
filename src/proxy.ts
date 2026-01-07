@@ -1,20 +1,18 @@
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
-import { NextRequest } from 'next/server';
 
-const intlMiddleware = createMiddleware(routing);
-
-export default function middleware(request: NextRequest) {
-  const response = intlMiddleware(request);
-
-  return response;
-}
+export default createMiddleware(routing);
 
 export const config = {
-  // Match all pathnames except for
-  // - /api (API routes)
-  // - /_next (Next.js internals)
-  // - /_static (static files)
-  // - all root files (e.g. favicon.ico, sitemap.xml, robots.txt)
-  matcher: ['/((?!api|_next|_static|_vercel|[\\w-]+\\.\\w+).*)']
+  // Use the recommended Next-Intl matcher that skips internal files
+  matcher: [
+    // Enable a redirect to a matching locale at the root
+    '/',
+
+    // Set a cookie to remember the last locale for these paths
+    '/(ar|en)/:path*',
+
+    // Do not run middleware on internal Next.js paths and static files
+    '/((?!api|_next|_static|_vercel|[\\w-]+\\.\\w+).*)'
+  ]
 };
