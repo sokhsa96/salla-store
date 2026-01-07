@@ -27,8 +27,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 async function getProduct(id: string) {
   try {
     const { data } = await api.get<Product>(`/products/${id}`);
+    console.log("✅ Product Fetched:", data.title);
     return data;
-  } catch (e) {
+  } catch (e: any) {
+    console.error("❌ API Fetch Error:", e.response?.status, e.message);
     return null;
   }
 }
