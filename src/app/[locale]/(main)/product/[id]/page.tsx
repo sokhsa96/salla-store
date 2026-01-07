@@ -1,56 +1,59 @@
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
 import { Star, Truck, RefreshCcw } from 'lucide-react';
-import api from '@/lib/axios';
 import { Product } from '@/types';
 
 import ProductGallery from '@/components/products/ProductGallery';
 import ProductActions from '@/components/products/ProductActions';
-import ProductList from '@/components/products/ProductList'; // Reused for "Related"
+import ProductList from '@/components/products/ProductList';
 
-// 1. Dynamic SEO
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+/**
+ * SHARED DATA FETCHING FUNCTION
+ * Next.js 15 automatically memoizes fetch calls. 
+ * This ensures we only hit the API ONCE even if called in Metadata and Page.
+ */
+async function getProduct(id: string): Promise<Product | null> {
   try {
-    const { data } = await api.get<Product>(`/products/${id}`);
-    return {
-      title: `${data.title} | Salla Store`,
-      description: data.description.slice(0, 150),
-      openGraph: { images: [data.image] }
-    };
-  } catch (e) {
-    return { title: 'Product Not Found' };
-  }
-}
+    const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
+      // Force Next.js to treat this as fresh data
+      next: { revalidate: 3600 }, 
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      }
+    });
 
-// 2. Data Fetching
-async function getProduct(id: string) {
-  try {
-    // Attempt with Axios first
-    const { data } = await api.get<Product>(`/products/${id}`);
-    return data;
-  } catch (e: any) {
-    console.error("❌ Axios failed, trying native fetch...", e.message);
-    
-    // Fallback: Sometimes native fetch handles Vercel environments better
-    try {
-      const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        }
-      });
-      if (!res.ok) return null;
-      return res.json();
-    } catch (fetchErr) {
+    if (!res.ok) {
+      console.error(`❌ API returned status: ${res.status}`);
       return null;
     }
+
+    return res.json();
+  } catch (error) {
+    console.error("❌ Fetch error:", error);
+    return null;
   }
 }
 
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+// 1. Dynamic SEO (Next.js 15)
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const product = await getProduct(id);
 
+  if (!product) return { title: 'Product Not Found | Salla Store' };
+
+  return {
+    title: `${product.title} | Salla Store`,
+    description: product.description.slice(0, 150),
+    openGraph: { images: [product.image] }
+  };
+}
+
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  // Await params as required by Next.js 15
+  const { id } = await params;
+  const product = await getProduct(id);
+
+  // Trigger 404 page if API failed or product doesn't exist
   if (!product) notFound();
 
   return (
@@ -72,7 +75,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 {product.category}
               </span>
               
-              {/* Rating Pill */}
               <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
                 <Star size={14} className="fill-secondary text-secondary" />
                 <span className="text-sm font-bold">{product.rating.rate}</span>
@@ -84,7 +86,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               {product.title}
             </h1>
 
-            {/* Price & Installments Mock */}
             <div className="border-b border-gray-100 pb-6">
               <div className="flex items-baseline gap-4 mb-2">
                 <span className="text-4xl font-bold text-primary">${product.price}</span>
@@ -98,12 +99,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           </div>
 
           {/* Description */}
-          <div className="prose prose-sm text-gray-600 animate-in slide-in-from-bottom-4 duration-700 delay-100 fill-mode-backwards">
+          <div className="prose prose-sm text-gray-600">
             <p className="leading-relaxed">{product.description}</p>
           </div>
 
-          {/* Feature Toggles (Mock) */}
-          <div className="grid grid-cols-2 gap-4 animate-in slide-in-from-bottom-4 duration-700 delay-200 fill-mode-backwards">
+          {/* Features */}
+          <div className="grid grid-cols-2 gap-4">
              <div className="p-4 rounded-xl bg-gray-50 border border-gray-100 flex items-center gap-3">
                <div className="p-2 bg-white rounded-full shadow-sm text-primary"><Truck size={20}/></div>
                <div>
@@ -120,7 +121,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
              </div>
           </div>
 
-          {/* Actions Component (Client Side) */}
           <ProductActions product={product} />
 
         </div>
@@ -128,17 +128,11 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
       {/* --- BOTTOM SECTION: RELATED PRODUCTS --- */}
       <div className="border-t border-gray-100 pt-16">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-foreground">You Might Also Like</h2>
-          <a href="#" className="text-primary font-semibold hover:underline">View all</a>
-        </div>
-        {/* We reuse the ProductList but in a real app we'd pass a specific category */}
-        <div className="relative overflow-hidden h-[500px]">
+        <h2 className="text-2xl font-bold text-foreground mb-8">You Might Also Like</h2>
+        <div className="relative overflow-hidden h-fit">
            <ProductList /> 
-           {/* Note: In a real app, I would pass props to ProductList to filter by category: 'electronics' */}
         </div>
       </div>
-
     </div>
   );
 }
