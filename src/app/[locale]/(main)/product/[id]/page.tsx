@@ -26,11 +26,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 // 2. Data Fetching
 async function getProduct(id: string) {
   try {
-    const { data } = await api.get<Product>(`/products/${id}`);
-    console.log("✅ Product Fetched:", data.title);
-    return data;
-  } catch (e: any) {
-    console.error("❌ API Fetch Error:", e.response?.status, e.message);
+    const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
+      headers: {
+         'User-Agent': 'Mozilla/5.0...' 
+      }
+    });
+    
+    if (!res.ok) return null;
+    return res.json();
+  } catch (e) {
     return null;
   }
 }
