@@ -1,37 +1,38 @@
-import { notFound } from 'next/navigation';
 import { Star, Truck, RefreshCcw, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Product } from '@/types';
-
 import ProductGallery from '@/components/products/ProductGallery';
 import ProductActions from '@/components/products/ProductActions';
 import ProductList from '@/components/products/ProductList';
 
-/**
- * BEST PRACTICE: Unified Fetcher
- * We use native fetch here because Next.js 15 memoizes it.
- * This prevents double-calling the API for Metadata and the Page.
+/** 
+ * NEXT.JS 15 SEGMENT CONFIGURATION
+ * This is the clean way to handle caching. It tells Next.js to 
+ * cache this entire page segment for 1 hour (3600 seconds).
+ * This replaces the need for 'next: { revalidate }' inside fetch.
  */
+export const revalidate = 3600; 
+
 async function getProduct(id: string): Promise<Product | null> {
   try {
     const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
-      // Use no-cache during debugging to ensure we aren't seeing old 404s
-      cache: 'no-store', 
+      // We removed the 'next' property here to satisfy the TS compiler.
+      // Caching is now handled by the 'export const revalidate' above.
+      method: 'GET',
       headers: {
         'Accept': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (SallaChallenge/1.0)'
       }
     });
 
     if (!res.ok) return null;
     return res.json();
   } catch (error) {
-    console.error("Fetch Error:", error);
+    console.error("Critical Fetch Error:", error);
     return null;
   }
 }
 
-// 1. DYNAMIC SEO (Fixed to use unified fetcher)
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const product = await getProduct(id);
@@ -45,26 +46,24 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-// 2. MAIN COMPONENT
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const product = await getProduct(id);
 
   return (
     <div className="pb-20">
-      {/* TERNARY LOGIC: If API fails, show Sorry UI, else show Product Page */}
       {!product ? (
-        <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-8 bg-white rounded-3xl border-2 border-dashed border-gray-100 animate-in fade-in duration-500">
+        <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-8 bg-white rounded-3xl border-2 border-dashed border-gray-100">
           <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4">
             <AlertCircle size={32} />
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">We couldn't find this product</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Something went wrong</h2>
           <p className="text-muted-foreground mb-6 max-w-md">
-            The external product catalog (FakeStoreAPI) might be experiencing issues or the product ID is invalid.
+            We're having trouble reaching the product catalog right now. Please try again or explore our other collections.
           </p>
           <Link href="/" className="flex items-center gap-2 px-8 py-3 bg-primary text-white rounded-full font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20">
             <ArrowLeft size={18} />
-            Continue Shopping
+            Back to Catalog
           </Link>
         </div>
       ) : (
@@ -85,17 +84,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 </div>
               </div>
 
-              <div className="prose prose-sm text-gray-600">
-                <p className="leading-relaxed">{product.description}</p>
-              </div>
+              <p className="text-gray-600 leading-relaxed">{product.description}</p>
 
               <div className="grid grid-cols-2 gap-4">
                  <div className="p-4 rounded-2xl bg-gray-50 flex items-center gap-3">
-                   <div className="p-2 bg-white rounded-full text-primary"><Truck size={20}/></div>
-                   <span className="text-sm font-bold">Free Delivery</span>
+                   <Truck className="text-primary" />
+                   <span className="text-sm font-bold">Fast Delivery</span>
                  </div>
                  <div className="p-4 rounded-2xl bg-gray-50 flex items-center gap-3">
-                   <div className="p-2 bg-white rounded-full text-primary"><RefreshCcw size={20}/></div>
+                   <RefreshCcw className="text-primary" />
                    <span className="text-sm font-bold">Free Returns</span>
                  </div>
               </div>
